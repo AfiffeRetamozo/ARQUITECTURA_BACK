@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
 from modelos import db
+from modelos.modelos import Usuario, UsuarioSchema
 from vistas import  VistaSignIn, VistaLogIn
 
 app = Flask(__name__)
@@ -22,9 +23,13 @@ app_context.push()
 db.init_app(app)
 db.create_all()
 
-#with app.app_context():
+with app.app_context():
+   usuario_schema = UsuarioSchema
+   usuario_test = Usuario(usuario = "user_test", contrasena = "password", nombre="user_test", apellido= "user_test",cedula="9000000",telefono ="88888", email = "test@test.com", genero ="masculino", direccion="asdasd", rol="test")
+   db.session.add(usuario_test)
+   db.session.commit()
 #     apostador_Schema=ApostadorSchema()
-   
+
 #     apuesta_schema =ApuestaSchema()
     
 #     A = Apostador(nombre_apostador= "Jose")

@@ -1,9 +1,11 @@
+import datetime
 import email
 from flask import request
 from flask_jwt_extended import jwt_required, create_access_token
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
+import time
 
 from modelos import db, Usuario, UsuarioSchema
 usuario_schema = UsuarioSchema()
@@ -34,12 +36,19 @@ class VistaSignIn(Resource):
 class VistaLogIn(Resource):
 
     def post(self):
+        usr = request.json["usuario"]
+        fecha =  time.strftime("%c")
         usuario = Usuario.query.filter(Usuario.usuario == request.json["usuario"],
                                        Usuario.contrasena == request.json["contrasena"]).first()
         db.session.commit()
         if usuario is None:
+            
+            file = open('log_signin.txt', 'a+')
+            file.write('inicio de sesion incorrecto del usuario {} :{}\n'.format(usr,fecha))
             return "El usuario no existe", 404
         else:
+            file = open('log_signin.txt', 'a+')
+            file.write('inicio de sesion exitososo del usuario {} :{}\n'.format(usr,fecha))
             token_de_acceso = create_access_token(identity=usuario.id)
             return {"mensaje": "Inicio de sesión exitoso", "token": token_de_acceso}
 
