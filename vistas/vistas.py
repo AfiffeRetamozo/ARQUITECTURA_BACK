@@ -6,6 +6,7 @@ from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
 import time
+import smtplib
 
 from modelos import db, Usuario, UsuarioSchema
 usuario_schema = UsuarioSchema()
@@ -52,3 +53,15 @@ class VistaLogIn(Resource):
             token_de_acceso = create_access_token(identity=usuario.id)
             return {"mensaje": "Inicio de sesión exitoso", "token": token_de_acceso}
 
+class VistaEmailAprobarCompras(Resource):
+    def post(self):
+        message = 'Acaba de generar una compra por favor valìdela usando el còdigo 312454'
+        subject = 'ABC Monitoring verificaciòn de compra'
+        message = 'Subject: {}\n\n{}'.format(subject,message)
+        server = smtplib.SMTP('smtp.gmail.com',587)
+        server = starttls()
+        server.login('mailsenderabcmonitoring@gmail.com','Arquitectura2022!')
+        server.sendmail('mailsenderabcmonitoring@gmail.com','jorgeballe@gmail.com',message)
+        server.quit()
+        
+        
